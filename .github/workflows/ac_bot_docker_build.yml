@@ -24,7 +24,7 @@ jobs:
       - name: 拉取当前项目
         uses: actions/checkout@v4
         with:
-          ref: 'master'
+          ref: 'build'
           path: 'build'
 
       - name: 拉取Eluna代码
