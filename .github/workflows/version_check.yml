@@ -54,10 +54,10 @@ jobs:
                     fi
                 fi
 
-                API_URL="https://api.github.com/repos/${{ github.repository }}/contents/Version.txt?ref=build"
+                API_URL="https://api.github.com/repos/${{ github.repository }}/contents/Version.txt"
                 FILE_SHA=$(curl -s -H "Authorization: token ${{ secrets.TOKEN }}" \
                                        -H "Accept: application/vnd.github.v3+json" \
-                                       $API_URL | jq -r '.sha')
+                                       "$API_URL?ref=build" | jq -r '.sha')
                 curl -X PUT $API_URL \
                     -H "Authorization: token ${{ secrets.TOKEN }}" \
                     -H "Accept: application/vnd.github.v3+json" \
@@ -65,6 +65,7 @@ jobs:
                           "message": "'"$message"'",
                           "content": "'"$(base64 -w 0 Version.txt)"'",
                           "sha": "'"$FILE_SHA"'"
+                          "branch": "build"
                         }'
             fi
       - name: 触发AC工作流
