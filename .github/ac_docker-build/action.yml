@@ -1,0 +1,40 @@
+name: Docker 标记与编译
+description: 一个辅助操作，用于简化生成 Docker 标签和编译镜像的过程
+inputs:
+  component-name:
+    description: 组件或 Docker 镜像的名称（例如:worldserver、authserver)
+    type: string
+    required: true
+  push:
+    description: 是否推送镜像
+    type: boolean
+    required: true
+  version:
+    description: 用于 Docker 镜像的版本标签
+    required: true
+    type: string
+  dockerfile:
+    description: 要使用的 Dockerfile
+    required: false
+    default: apps/docker/Dockerfile
+runs:
+  using: composite
+  steps:
+    - name: 编译并推送
+      uses: docker/build-push-action@v5
+      with:
+        context: ${{ github.workspace }}
+        file: ${{ inputs.dockerfile }}
+        push: ${{ inputs.push }}
+        tags: |
+            aopkcn/ac-wotlk-${{ inputs.component-name }}:${{ inputs.version }}
+            aopkcn/ac-wotlk-${{ inputs.component-name }}:latest
+            ghcr.io/aopkcn/ac-wotlk-${{ inputs.component-name }}:${{ inputs.version }}
+            ghcr.io/aopkcn/ac-wotlk-${{ inputs.component-name }}:latest
+            registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-${{ inputs.component-name }}:${{ inputs.version }}
+            registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-${{ inputs.component-name }}:latest
+        target:  ${{ inputs.component-name }}
+        build-args: |
+          USER_ID=1000
+          GROUP_ID=1000
+          DOCKER_USER=acore

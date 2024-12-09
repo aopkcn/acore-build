@@ -1,0 +1,89 @@
+name: AC_windows编译
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types:
+      - ac
+concurrency:
+  group: ${{ github.workflow }})
+  cancel-in-progress: true
+jobs:
+  build-ubuntu:
+    name: 执行编译
+    runs-on: windows-latest
+    env:
+      BOOST_ROOT: C:\local\boost_1_82_0
+    steps:
+      - name: 拉取核心代码
+        uses: actions/checkout@v4
+        with:
+          repository: 'azerothcore/azerothcore-wotlk'
+          ref: 'master'
+
+      - name: 拉取当前项目
+        uses: actions/checkout@v4
+        with:
+          ref: 'build'
+          path: 'build'
+
+      - name: 拉取Eluna代码
+        uses: actions/checkout@v4
+        with:
+          repository: 'azerothcore/mod-eluna'  
+          ref: 'master'
+          path: 'modules/mod-eluna'
+
+      - name: 下载并替换MotdMgr.cpp
+        run: |
+          curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/master/MotdMgr.cpp
+          Move-Item -Path MotdMgr.cpp -Destination src/server/game/Motd/MotdMgr.cpp -Force
+
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2.13
+      - name: Configure OS
+        shell: bash
+        env:
+          CONTINUOUS_INTEGRATION: true
+        run: |
+          ./acore.sh install-deps
+      - name: 编译
+        shell: bash
+        run: |
+          export CTOOLS_BUILD=all
+          # export CTYPE=RelWithDebInfo
+          ./acore.sh compiler build
+      - name: 打包编译文件
+        run: |
+    
+            mkdir -p AzerothCoreWotlk-Win64\lua_scripts
+            mkdir -p AzerothCoreWotlk-Win64\data
+
+            Copy-Item -Path "C:\Program Files\OpenSSL\bin\legacy.dll" -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination AzerothCoreWotlk-Win64
+           
+            Copy-Item -Path data\sql -Destination AzerothCoreWotlk-Win64\data -Recurse -Force
+            Copy-Item -Path env\dist\configs -Destination AzerothCoreWotlk-Win64 -Recurse -Force
+            Copy-Item -Path env\dist\authserver.exe -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path env\dist\worldserver.exe -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path env\dist\dbimport.exe -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path env\dist\map_extractor.exe -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path env\dist\mmaps_generator.exe -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path env\dist\vmap4_assembler.exe -Destination AzerothCoreWotlk-Win64
+            Copy-Item -Path env\dist\vmap4_extractor.exe -Destination AzerothCoreWotlk-Win64
+
+            Compress-Archive -Path AzerothCoreWotlk -DestinationPath AC-Win.zip
+
+      #       Move-Item -Path C:\Program Files\OpenSSL\bin\legacy.dll -Destination var\build\obj\bin\RelWithDebInfo
+      #       Move-Item -Path C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
+      #       Move-Item -Path C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
+      #       Move-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination var\build\obj\bin\RelWithDebInfo
+      #       Compress-Archive -Path var\build\obj\bin\RelWithDebInfo\* -DestinationPath AC-Win.zip
+      - name: 上传Windows编译文件
+        uses: actions/upload-artifact@v4
+        with:
+         name: AzerothCoreWotlk-Win64
+         path: AzerothCoreWotlk-Win64

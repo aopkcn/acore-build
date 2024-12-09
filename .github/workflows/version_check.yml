@@ -1,1 +1,93 @@
+name: 版本检查
 
+on:
+  workflow_dispatch:
+  schedule:  
+  - cron: "30 22 * * *"
+  push:
+    branches: [build]
+    paths-ignore:
+      - 'Version.txt'
+      - 'README.md'
+
+
+
+jobs:
+  build-ubuntu:
+    name: 检查版本
+    runs-on: ubuntu-20.04
+    outputs:
+      isazerothcore: ${{ steps.update_switch.outputs.isazerothcore }}
+      isplayerbot: ${{ steps.update_switch.outputs.isplayerbot }}
+    steps:
+      - name: 检查提交 ID 是否需要更新
+        id: update_switch
+        run: |
+            AC_ID=$(curl -s https://api.github.com/repos/azerothcore/azerothcore-wotlk/commits/master?per_page=1 | jq -r '.sha')
+            LAC_ID=$(curl -s https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt | sed -n 's/^Azerothcore=//p')
+            BOT_ID=$(curl -s https://api.github.com/repos/liyunfan1223/azerothcore-wotlk/commits/Playerbot?per_page=1 | jq -r '.sha')
+            LBOT_ID=$(curl -s https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt | sed -n 's/^Playerbot=//p')
+            curl -s -L -o Version.txt https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt
+            echo "最新AC: $AC_ID 保存AC: $LAC_ID"
+            echo "最新BOT: $BOT_ID 保存BOT: $LBOT_ID"
+    
+            message=""
+            if [ "$AC_ID" == "$LAC_ID" ] && [ "$BOT_ID" == "$LBOT_ID" ]; then
+                echo "当前提交 ID 已是最新，无需更新"
+                echo "isazerothcore=true" >> $GITHUB_OUTPUT
+                echo "isplayerbot=true" >> $GITHUB_OUTPUT
+            else
+                if [ "$AC_ID" != "$LAC_ID" ]; then
+                    echo "AC 提交 ID 不一致，需要更新"
+                    echo "isazerothcore=false" >> $GITHUB_OUTPUT
+                    sed -i "s/^Azerothcore=.*/Azerothcore=$AC_ID/" Version.txt
+                    message="更新Azerothcore提交ID:$AC_ID \n"
+                fi
+                if [ "$BOT_ID" != "$LBOT_ID" ]; then
+                    echo "BOT 提交 ID 不一致，需要更新"
+                    echo "isplayerbot=false" >> $GITHUB_OUTPUT
+                    sed -i "s/^Playerbot=.*/Playerbot=$BOT_ID/" Version.txt
+                    if [ -n "$message" ]; then
+                        message="$message 更新Playerbot提交ID:$BOT_ID"
+                    else
+                        message="更新Playerbot提交ID:$BOT_ID"
+                    fi
+                fi
+
+                API_URL="https://api.github.com/repos/${{ github.repository }}/contents/Version.txt?ref=build"
+                FILE_SHA=$(curl -s -H "Authorization: token ${{ secrets.TOKEN }}" \
+                                       -H "Accept: application/vnd.github.v3+json" \
+                                       $API_URL | jq -r '.sha')
+                curl -X PUT $API_URL \
+                    -H "Authorization: token ${{ secrets.TOKEN }}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    -d '{
+                          "message": "'"$message"'",
+                          "content": "'"$(base64 -w 0 Version.txt)"'",
+                          "sha": "'"$FILE_SHA"'"
+                        }'
+            fi
+      - name: 触发AC工作流
+        if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isazerothcore == 'false'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+          repository: aopkcn/acore-build
+          event-type: ac
+          client-payload: >
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }
+      - name: 触发机器人工作流
+        if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isplayerbot == 'false'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+          repository: aopkcn/acore-build
+          event-type: bot
+          client-payload: >
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }
