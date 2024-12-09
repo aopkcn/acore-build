@@ -5,9 +5,13 @@ on:
   repository_dispatch:
     types:
       - bot
+    branches:
+      - build
+
 concurrency:
   group: ${{ github.workflow }})
   cancel-in-progress: true
+
 jobs:
   build-ubuntu:
     name: 执行编译
