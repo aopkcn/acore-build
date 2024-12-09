@@ -1,4 +1,4 @@
-name: AC_windows编译
+name: AC_windows缂栬瘧
 
 on:
   workflow_dispatch:
@@ -10,31 +10,31 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-ubuntu:
-    name: 执行编译
+    name: 鎵ц缂栬瘧
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
     steps:
-      - name: 拉取核心代码
+      - name: 鎷夊彇鏍稿績浠ｇ爜
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/azerothcore-wotlk'
           ref: 'master'
 
-      - name: 拉取当前项目
+      - name: 鎷夊彇褰撳墠椤圭洰
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: 拉取Eluna代码
+      - name: 鎷夊彇Eluna浠ｇ爜
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: 下载并替换MotdMgr.cpp
+      - name: 涓嬭浇骞舵浛鎹otdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/master/MotdMgr.cpp
           Move-Item -Path MotdMgr.cpp -Destination src/server/game/Motd/MotdMgr.cpp -Force
@@ -48,13 +48,13 @@ jobs:
           CONTINUOUS_INTEGRATION: true
         run: |
           ./acore.sh install-deps
-      - name: 编译
+      - name: 缂栬瘧
         shell: bash
         run: |
           export CTOOLS_BUILD=all
           # export CTYPE=RelWithDebInfo
           ./acore.sh compiler build
-      - name: 打包编译文件
+      - name: 鎵撳寘缂栬瘧鏂囦欢
         run: |
     
             mkdir -p AzerothCoreWotlk-Win64\lua_scripts
@@ -82,7 +82,7 @@ jobs:
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Compress-Archive -Path var\build\obj\bin\RelWithDebInfo\* -DestinationPath AC-Win.zip
-      - name: 上传Windows编译文件
+      - name: 涓婁紶Windows缂栬瘧鏂囦欢
         uses: actions/upload-artifact@v4
         with:
          name: AzerothCoreWotlk-Win64
