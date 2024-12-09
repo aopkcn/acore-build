@@ -5,6 +5,9 @@ on:
   repository_dispatch:
     types:
       - bot
+  push:
+    branches: [build]
+
 concurrency:
   group: ${{ github.workflow }})
   cancel-in-progress: true
