@@ -75,7 +75,7 @@ jobs:
             Copy-Item -Path env\dist\vmap4_assembler.exe -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path env\dist\vmap4_extractor.exe -Destination AzerothCoreWotlk-Win64
 
-            Compress-Archive -Path AzerothCoreWotlk -DestinationPath AC-Win.zip
+            Compress-Archive -Path AzerothCoreWotlk-Win64 -DestinationPath AC-Win.zip
 
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\legacy.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
@@ -89,7 +89,7 @@ jobs:
          path: AzerothCoreWotlk-Win64
 
   ubuntu-build:
-    name: 镜像编译
+    name: Docker编译
     runs-on: ubuntu-20.04
     steps:
       - name: 拉取核心代码
