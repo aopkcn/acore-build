@@ -75,7 +75,7 @@ jobs:
   ac-docker-build:
     name: ACdocker编译
     needs: version-check
-    if: ${{ needs.build-ubuntu.outputs.isazerothcore == 'false' }}
+    if: ${{ needs.version-check.outputs.isazerothcore == 'false' }}
     runs-on: ubuntu-20.04
     steps:
       - name: 拉取核心代码
@@ -178,7 +178,7 @@ jobs:
   ac-windows-build:
     name: ACWin64编译
     needs: version-check
-    if: ${{ needs.build-ubuntu.outputs.isazerothcore == 'false' }}
+    if: ${{ needs.version-check.outputs.isazerothcore == 'false' }}
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
@@ -259,7 +259,7 @@ jobs:
   ac-bot-docker-build:
     name: AC机器人docker编译
     needs: version-check
-    if: ${{ needs.build-ubuntu.outputs.isplayerbot == 'false' }}
+    if: ${{ needs.version-check.outputs.isplayerbot == 'false' }}
     runs-on: ubuntu-20.04
     steps:
       - name: 拉取核心代码
@@ -370,7 +370,7 @@ jobs:
   ac-bot-windows-build:
     name: AC机器人Win64编译
     needs: version-check
-    if: ${{ needs.build-ubuntu.outputs.isplayerbot == 'false' }}
+    if: ${{ needs.version-check.outputs.isplayerbot == 'false' }}
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
