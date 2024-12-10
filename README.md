@@ -87,3 +87,30 @@ docker pull ghcr.io/aopkcn/ac-bot-wotlk-dev:latest
   - 移除玩家进入服务器公告显示网址([查看修改](https://github.com/aopkcn/acore-build/blob/master/MotdMgr.cpp))
 
  - 编译时间会在每日早晨6:30执行检查 
+
+## 常见问题
+
+<details>
+<summary>AuthServer端</summary>
+
+| `显示错误` | `解决办法`                                                                                   |
+|-----------|--------------------------------------------------------------------------------------------------|
+| Config::LoadFile: Failed open file 'configs/authserver.conf'|  将configs文件夹中authserver.conf.dist复制重命名为authserver.conf
+| Could not connect to MySQL database at 127.0.0.1: Access denied for user 'acore'@'localhost' (using password: YES)DatabasePool Login NOT opened. There were errors opening the MySQL connections. Check your log file for specific errors |  LoginDatabaseInfo设置项中数据库配置不正确；位于authserver.conf
+| Directory "D:/a/acore-build/acore-build/data/sql/base/db_auth/" not exist Could not populate the Login database, see log for details. |  SourceDirectory设置项中路径不正确,设置"."为当前目录；位于authserver.conf
+
+</details>
+<details>
+<summary>WorldServer端</summary>
+
+| `显示错误` | `解决办法`                                                                                   |
+|-----------|--------------------------------------------------------------------------------------------------|
+| Config::LoadFile: Failed open file 'configs/worldserver.conf'|  将configs文件夹中worldserver.conf.dist复制重命名为worldserver.conf
+| Could not connect to MySQL database at 127.0.0.1: Access denied for user 'acore'@'localhost' (using password: YES)DatabasePool Login NOT opened. There were errors opening the MySQL connections. Check your log file for specific errors |  LoginDatabaseInfo、WorldDatabaseInfo、CharacterDatabaseInfo设置项中数据库配置不正确；位于worldserver.conf
+| Directory "D:/a/acore-build/acore-build/data/sql/base/db_characters/" not exist Could not populate the Character database, see log for details. |  SourceDirectory设置项中路径不正确,设置"."为当前目录；位于authserver.conf
+| Could not connect to MySQL database at 127.0.0.1: Unknown database 'acore_characters'Database "acore_characters" does not exist | 提示数据库中acore_characters不存在是否创建？回车即可
+| Could not connect to MySQL database at 127.0.0.1: Unknown database 'acore_world'Database "acore_world" does not exist | 提示数据库中acore_world不存在是否创建？回车即可
+| Map file './maps/0004331.map': does not exist! | 请下载[data.zip](https://github.com/wowgaming/client-data/releases/)解压到data文件夹中,确保设置项为DataDir = "./adta"；位于worldserver.conf
+| 文件夹中没有lua_scripts | 请手动创建lua_scripts文件夹，lua文件加载目录
+
+</details>

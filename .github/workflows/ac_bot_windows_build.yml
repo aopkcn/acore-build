@@ -83,7 +83,7 @@ jobs:
             Copy-Item -Path env\dist\vmap4_assembler.exe -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path env\dist\vmap4_extractor.exe -Destination AzerothCoreWotlkBot-Win64
 
-            Compress-Archive -Path AzerothCoreWotlk-Win64 -DestinationPath AC-Bot-Win.zip
+            Compress-Archive -Path AzerothCoreWotlkBot-Win64 -DestinationPath AC-Bot-Win.zip
 
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\legacy.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
