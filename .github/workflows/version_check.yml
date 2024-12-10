@@ -68,25 +68,25 @@ jobs:
                           "branch": "build"
                         }'
             fi
-      - name: 触发AC工作流
+      - name: 触发AC纯净版编译
         if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isazerothcore == 'false'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.TOKEN }}
           repository: aopkcn/acore-build
-          event-type: ac
+          event-type: AC纯净版编译
           client-payload: >
             {
               "ref": "${{ github.ref }}",
               "sha": "${{ github.sha }}"
             }
-      - name: 触发机器人工作流
+      - name: 触发AC机器人编译
         if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isplayerbot == 'false'
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.TOKEN }}
           repository: aopkcn/acore-build
-          event-type: bot
+          event-type: AC机器人编译
           client-payload: >
             {
               "ref": "${{ github.ref }}",

@@ -3,8 +3,8 @@ name: AC_Docker编译
 on:
   workflow_dispatch:
   repository_dispatch:
-    types:
-      - ac
+    # types:
+    #   - ac
 concurrency:
   group: ${{ github.workflow }})
   cancel-in-progress: true

@@ -1,10 +1,10 @@
-name: AC_编译
+name: AC纯净版编译
 
 on:
   workflow_dispatch:
   repository_dispatch:
     types:
-      - ac
+      - AC纯净版编译
 concurrency:
   group: ${{ github.workflow }})
   cancel-in-progress: true
