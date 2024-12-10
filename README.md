@@ -86,7 +86,7 @@ docker pull ghcr.io/aopkcn/ac-bot-wotlk-dev:latest
   - 含[Playerbots](https://github.com/liyunfan1223/mod-playerbots)项目
   - 移除玩家进入服务器公告显示网址([查看修改](https://github.com/aopkcn/acore-build/blob/master/MotdMgr.cpp))
 
- - 编译时间会在每日早晨6:30执行检查 
+ - 编译时间每隔1小时执行检查 
 
 ## 常见问题
 
