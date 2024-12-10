@@ -2,13 +2,13 @@ name: 版本检查
 
 on:
   workflow_dispatch:
-  schedule:  
-  - cron: "30 22 * * *"
-  push:
-    branches: [build]
-    paths-ignore:
-      - 'Version.txt'
-      - 'README.md'
+  # schedule:  
+  # - cron: "30 22 * * *"
+  # push:
+  #   branches: [build]
+  #   paths-ignore:
+  #     - 'Version.txt'
+  #     - 'README.md'
 
 
 

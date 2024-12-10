@@ -1,9 +1,10 @@
-name: 自动编译各版本
+name: 自动编译
 
 on:
   workflow_dispatch:
   schedule:  
-  - cron: "30 22 * * *"
+  #- cron: "30 22 * * *"
+  - cron: "0 * * * *"  # 每小时执行一次
   push:
     branches: [build]
     paths-ignore:
