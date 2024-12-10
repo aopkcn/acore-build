@@ -1,0 +1,82 @@
+name: AC_ubuntu编译
+
+on:
+  workflow_dispatch:
+  # repository_dispatch:
+    # types:
+    #   - ac
+concurrency:
+  group: ${{ github.workflow }})
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+      matrix:
+        # the result of the matrix will be the combination of all attributes, so we get os*compiler builds
+        include:
+          - os: ubuntu-22.04
+            c_compiler: clang
+            cpp_compiler: clang++
+            build_type: Release
+          - os: ubuntu-22.04
+            c_compiler: gcc
+            cpp_compiler: g++
+            build_type: Release
+          - os: ubuntu-24.04
+            c_compiler: gcc
+            cpp_compiler: g++
+            build_type: Release
+            
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}-${{ matrix.cpp_compiler }}
+    steps:
+      - name: 拉取核心代码
+        uses: actions/checkout@v4
+        with:
+          repository: 'azerothcore/azerothcore-wotlk'
+          ref: 'master'
+
+      - name: 拉取当前项目
+        uses: actions/checkout@v4
+        with:
+          ref: 'build'
+          path: 'build'
+
+      - name: 拉取Eluna代码
+        uses: actions/checkout@v4
+        with:
+          repository: 'azerothcore/mod-eluna'  
+          ref: 'master'
+          path: 'modules/mod-eluna'
+
+      - name: 下载并替换MotdMgr.cpp
+        run: |
+          curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
+          mv -f MotdMgr.cpp src/server/game/Motd/MotdMgr.cpp
+
+      - name: Set reusable strings
+        id: strings
+        shell: bash
+        run: |
+         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      - name: Install Requirements
+        run: sudo apt-get update && sudo apt-get install git cmake make gcc g++ clang libmysqlclient-dev libssl-dev libbz2-dev libreadline-dev libncurses-dev mysql-server libboost-all-dev
+      - name: Configure CMake
+        run: >
+         cmake -B ${{ steps.strings.outputs.build-output-dir }}
+         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+         -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: ${{ steps.strings.outputs.build-output-dir }}

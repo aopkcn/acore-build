@@ -2,7 +2,7 @@ name: AC_Bot_Docker编译
 
 on:
   workflow_dispatch:
-  repository_dispatch:
+  # repository_dispatch:
     # types:
     #   - bot
 
