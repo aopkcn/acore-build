@@ -201,7 +201,7 @@ jobs:
         run: |
     
             mkdir -p AzerothCoreWotlk-Win64\lua_scripts
-            echo "" > AzerothCoreWotlk-Win64\lua脚本目录.txt
+            echo "" > AzerothCoreWotlk-Win64\lua_scripts\lua脚本目录.txt
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\legacy.dll" -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" -Destination AzerothCoreWotlk-Win64
@@ -403,7 +403,7 @@ jobs:
       - name: 打包编译文件
         run: |
             mkdir -p AzerothCoreWotlkBot-Win64\lua_scripts
-            echo "" > AzerothCoreWotlkBot-Win64\lua脚本目录.txt
+            echo "" > AzerothCoreWotlkBot-Win64\lua_scripts\lua脚本目录.txt
 
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\legacy.dll" -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" -Destination AzerothCoreWotlkBot-Win64
