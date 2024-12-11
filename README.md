@@ -1,13 +1,13 @@
-## ¿ìËÙÏÂÔØ
+## å¿«é€Ÿä¸‹è½½
 
-[×îĞÂ´¿¾»°æ±¾(Win64)](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) | [×îĞÂ»úÆ÷ÈË°æ±¾(Win64)](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) 
+[æœ€æ–°çº¯å‡€ç‰ˆæœ¬(Win64)](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlk-Win64.zip) | [æœ€æ–°çº¯å‡€ç‰ˆæœ¬æ•°æ®åº“](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlk-SQL.zip) | [æœ€æ–°æœºå™¨äººç‰ˆæœ¬(Win64)](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) | [æœ€æ–°æœºå™¨äººç‰ˆæœ¬æ•°æ®åº“](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-SQL.zip) 
 
-## ¾µÏñÀ­È¡
+## é•œåƒæ‹‰å–
 
-**Docker¾µÏñ**
+**Dockeré•œåƒ**
 
 ```
-#×îĞÂ´¿¾»°æ±¾
+#æœ€æ–°çº¯å‡€ç‰ˆæœ¬
 docker pull aopkcn/ac-wotlk-worldserver:latest
 docker pull aopkcn/ac-wotlk-authserver:latest
 docker pull aopkcn/ac-wotlk-db-import:latest
@@ -15,7 +15,7 @@ docker pull aopkcn/ac-wotlk-client-data:latest
 docker pull aopkcn/ac-wotlk-tools:latest
 docker pull aopkcn/ac-wotlk-dev:latest
 
-#×îĞÂ»úÆ÷ÈË°æ±¾
+#æœ€æ–°æœºå™¨äººç‰ˆæœ¬
 docker pull aopkcn/ac-bot-wotlk-worldserver:latest
 docker pull aopkcn/ac-bot-wotlk-authserver:latest
 docker pull aopkcn/ac-bot-wotlk-db-import:latest
@@ -25,10 +25,10 @@ docker pull aopkcn/ac-bot-wotlk-dev:latest
 ```
 
 <details>
-<summary>°¢ÀïÔÆ¾µÏñ</summary>
+<summary>é˜¿é‡Œäº‘é•œåƒ</summary>
 
 ```
-#×îĞÂ´¿¾»°æ±¾
+#æœ€æ–°çº¯å‡€ç‰ˆæœ¬
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-worldserver:latest
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-authserver:latest
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-db-import:latest
@@ -36,7 +36,7 @@ docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-client-data:latest
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-tools:latest
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-dev:latest
 
-#×îĞÂ»úÆ÷ÈË°æ±¾
+#æœ€æ–°æœºå™¨äººç‰ˆæœ¬
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-worldserver:latest
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-authserver:latest
 docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-db-import:latest
@@ -46,10 +46,10 @@ docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-dev:latest
 ```
 </details>
 <details>
-<summary>ghcr¾µÏñ</summary>
+<summary>ghcré•œåƒ</summary>
 	
 ```
-#×îĞÂ´¿¾»°æ±¾
+#æœ€æ–°çº¯å‡€ç‰ˆæœ¬
 docker pull ghcr.io/aopkcn/ac-wotlk-worldserver:latest
 docker pull ghcr.io/aopkcn/ac-wotlk-authserver:latest
 docker pull ghcr.io/aopkcn/ac-wotlk-db-import:latest
@@ -57,7 +57,7 @@ docker pull ghcr.io/aopkcn/ac-wotlk-client-data:latest
 docker pull ghcr.io/aopkcn/ac-wotlk-tools:latest
 docker pull ghcr.io/aopkcn/ac-wotlk-dev:latest
 
-#×îĞÂ»úÆ÷ÈË°æ±¾
+#æœ€æ–°æœºå™¨äººç‰ˆæœ¬
 docker pull ghcr.io/aopkcn/ac-bot-wotlk-worldserver:latest
 docker pull ghcr.io/aopkcn/ac-bot-wotlk-authserver:latest
 docker pull ghcr.io/aopkcn/ac-bot-wotlk-db-import:latest
@@ -67,50 +67,50 @@ docker pull ghcr.io/aopkcn/ac-bot-wotlk-dev:latest
 ```
 </details>
 
-#### ¾µÏñ±êÇ©ËµÃ÷
+#### é•œåƒæ ‡ç­¾è¯´æ˜
 
- - latestÓÀÔ¶ÊÇ×îĞÂµÄ£¬
- - ÀúÊ·°æ±¾Çë²é¿´ÏîÄ¿¸ù¾İÍÆËÍSHAÀ­È¡£¬Èç£ºdocker pull aopkcn/ac-wotlk-worldserver:889b509313f4f941d9d530a00d3f7d450adb7b1c
- - ´¿¾»°æ£º[azerothcore/azerothcore-wotlk](https://github.com/azerothcore/azerothcore-wotlk/commits/master/)ÏîÄ¿
- - »úÆ÷ÈË°æ£º[liyunfan1223/azerothcore-wotlk](https://github.com/liyunfan1223/azerothcore-wotlk/commits/Playerbot/)ÏîÄ¿
+ - latestæ°¸è¿œæ˜¯æœ€æ–°çš„ï¼Œ
+ - å†å²ç‰ˆæœ¬è¯·æŸ¥çœ‹é¡¹ç›®æ ¹æ®æ¨é€SHAæ‹‰å–ï¼Œå¦‚ï¼šdocker pull aopkcn/ac-wotlk-worldserver:889b509313f4f941d9d530a00d3f7d450adb7b1c
+ - çº¯å‡€ç‰ˆï¼š[azerothcore/azerothcore-wotlk](https://github.com/azerothcore/azerothcore-wotlk/commits/master/)é¡¹ç›®
+ - æœºå™¨äººç‰ˆï¼š[liyunfan1223/azerothcore-wotlk](https://github.com/liyunfan1223/azerothcore-wotlk/commits/Playerbot/)é¡¹ç›®
 
 
-## ±àÒëËµÃ÷
+## ç¼–è¯‘è¯´æ˜
 
-- ´¿¾»°æ£ºÊÇÓÉ[azerothcore/azerothcore-wotlk](https://github.com/azerothcore/azerothcore-wotlk)ÏîÄ¿±àÒë
-  - º¬[Eluna](https://github.com/azerothcore/mod-eluna)ÏîÄ¿
-  - ÒÆ³ıÍæ¼Ò½øÈë·şÎñÆ÷¹«¸æÏÔÊ¾ÍøÖ·([²é¿´ĞŞ¸Ä](https://github.com/aopkcn/acore-build/blob/master/MotdMgr.cpp))
+- çº¯å‡€ç‰ˆï¼šæ˜¯ç”±[azerothcore/azerothcore-wotlk](https://github.com/azerothcore/azerothcore-wotlk)é¡¹ç›®ç¼–è¯‘
+  - å«[Eluna](https://github.com/azerothcore/mod-eluna)é¡¹ç›®
+  - ç§»é™¤ç©å®¶è¿›å…¥æœåŠ¡å™¨å…¬å‘Šæ˜¾ç¤ºç½‘å€([æŸ¥çœ‹ä¿®æ”¹](https://github.com/aopkcn/acore-build/blob/master/MotdMgr.cpp))
 
-- »úÆ÷ÈË°æ£ºÊÇÓÉ[liyunfan1223/azerothcore-wotlk](https://github.com/liyunfan1223/azerothcore-wotlk)·ÖÖ§ÏîÄ¿±àÒë
-  - º¬[Eluna](https://github.com/azerothcore/mod-eluna)ÏîÄ¿
-  - º¬[Playerbots](https://github.com/liyunfan1223/mod-playerbots)ÏîÄ¿
-  - ÒÆ³ıÍæ¼Ò½øÈë·şÎñÆ÷¹«¸æÏÔÊ¾ÍøÖ·([²é¿´ĞŞ¸Ä](https://github.com/aopkcn/acore-build/blob/master/MotdMgr.cpp))
+- æœºå™¨äººç‰ˆï¼šæ˜¯ç”±[liyunfan1223/azerothcore-wotlk](https://github.com/liyunfan1223/azerothcore-wotlk)åˆ†æ”¯é¡¹ç›®ç¼–è¯‘
+  - å«[Eluna](https://github.com/azerothcore/mod-eluna)é¡¹ç›®
+  - å«[Playerbots](https://github.com/liyunfan1223/mod-playerbots)é¡¹ç›®
+  - ç§»é™¤ç©å®¶è¿›å…¥æœåŠ¡å™¨å…¬å‘Šæ˜¾ç¤ºç½‘å€([æŸ¥çœ‹ä¿®æ”¹](https://github.com/aopkcn/acore-build/blob/master/MotdMgr.cpp))
 
- - ±àÒëÊ±¼äÃ¿¸ô1Ğ¡Ê±Ö´ĞĞ¼ì²é 
+ - ç¼–è¯‘æ—¶é—´æ¯éš”1å°æ—¶æ‰§è¡Œæ£€æŸ¥ 
 
-## ³£¼ûÎÊÌâ
+## å¸¸è§é—®é¢˜
 
 <details>
-<summary>AuthServer¶Ë</summary>
+<summary>AuthServerç«¯</summary>
 
-| `ÏÔÊ¾´íÎó` | `½â¾ö°ì·¨`                                                                                   |
+| `æ˜¾ç¤ºé”™è¯¯` | `è§£å†³åŠæ³•`                                                                                   |
 |-----------|--------------------------------------------------------------------------------------------------|
-| Config::LoadFile: Failed open file 'configs/authserver.conf'|  ½«configsÎÄ¼ş¼ĞÖĞauthserver.conf.dist¸´ÖÆÖØÃüÃûÎªauthserver.conf
-| Could not connect to MySQL database at 127.0.0.1: Access denied for user 'acore'@'localhost' (using password: YES)DatabasePool Login NOT opened. There were errors opening the MySQL connections. Check your log file for specific errors |  LoginDatabaseInfoÉèÖÃÏîÖĞÊı¾İ¿âÅäÖÃ²»ÕıÈ·£»Î»ÓÚauthserver.conf
-| Directory "D:/a/acore-build/acore-build/data/sql/base/db_auth/" not exist Could not populate the Login database, see log for details. |  SourceDirectoryÉèÖÃÏîÖĞÂ·¾¶²»ÕıÈ·,ÉèÖÃ"."Îªµ±Ç°Ä¿Â¼£»Î»ÓÚauthserver.conf
+| Config::LoadFile: Failed open file 'configs/authserver.conf'|  å°†configsæ–‡ä»¶å¤¹ä¸­authserver.conf.distå¤åˆ¶é‡å‘½åä¸ºauthserver.conf
+| Could not connect to MySQL database at 127.0.0.1: Access denied for user 'acore'@'localhost' (using password: YES)DatabasePool Login NOT opened. There were errors opening the MySQL connections. Check your log file for specific errors |  LoginDatabaseInfoè®¾ç½®é¡¹ä¸­æ•°æ®åº“é…ç½®ä¸æ­£ç¡®ï¼›ä½äºauthserver.conf
+| Directory "D:/a/acore-build/acore-build/data/sql/base/db_auth/" not exist Could not populate the Login database, see log for details. |  SourceDirectoryè®¾ç½®é¡¹ä¸­è·¯å¾„ä¸æ­£ç¡®,è®¾ç½®"."ä¸ºå½“å‰ç›®å½•ï¼›ä½äºauthserver.conf
 
 </details>
 <details>
-<summary>WorldServer¶Ë</summary>
+<summary>WorldServerç«¯</summary>
 
-| `ÏÔÊ¾´íÎó` | `½â¾ö°ì·¨`                                                                                   |
+| `æ˜¾ç¤ºé”™è¯¯` | `è§£å†³åŠæ³•`                                                                                   |
 |-----------|--------------------------------------------------------------------------------------------------|
-| Config::LoadFile: Failed open file 'configs/worldserver.conf'|  ½«configsÎÄ¼ş¼ĞÖĞworldserver.conf.dist¸´ÖÆÖØÃüÃûÎªworldserver.conf
-| Could not connect to MySQL database at 127.0.0.1: Access denied for user 'acore'@'localhost' (using password: YES)DatabasePool Login NOT opened. There were errors opening the MySQL connections. Check your log file for specific errors |  LoginDatabaseInfo¡¢WorldDatabaseInfo¡¢CharacterDatabaseInfoÉèÖÃÏîÖĞÊı¾İ¿âÅäÖÃ²»ÕıÈ·£»Î»ÓÚworldserver.conf
-| Directory "D:/a/acore-build/acore-build/data/sql/base/db_characters/" not exist Could not populate the Character database, see log for details. |  SourceDirectoryÉèÖÃÏîÖĞÂ·¾¶²»ÕıÈ·,ÉèÖÃ"."Îªµ±Ç°Ä¿Â¼£»Î»ÓÚauthserver.conf
-| Could not connect to MySQL database at 127.0.0.1: Unknown database 'acore_characters'Database "acore_characters" does not exist | ÌáÊ¾Êı¾İ¿âÖĞacore_characters²»´æÔÚÊÇ·ñ´´½¨£¿»Ø³µ¼´¿É
-| Could not connect to MySQL database at 127.0.0.1: Unknown database 'acore_world'Database "acore_world" does not exist | ÌáÊ¾Êı¾İ¿âÖĞacore_world²»´æÔÚÊÇ·ñ´´½¨£¿»Ø³µ¼´¿É
-| Map file './maps/0004331.map': does not exist! | ÇëÏÂÔØ[data.zip](https://github.com/wowgaming/client-data/releases/)½âÑ¹µ½dataÎÄ¼ş¼ĞÖĞ,È·±£ÉèÖÃÏîÎªDataDir = "./adta"£»Î»ÓÚworldserver.conf
-| ÎÄ¼ş¼ĞÖĞÃ»ÓĞlua_scripts | ÇëÊÖ¶¯´´½¨lua_scriptsÎÄ¼ş¼Ğ£¬luaÎÄ¼ş¼ÓÔØÄ¿Â¼
+| Config::LoadFile: Failed open file 'configs/worldserver.conf'|  å°†configsæ–‡ä»¶å¤¹ä¸­worldserver.conf.distå¤åˆ¶é‡å‘½åä¸ºworldserver.conf
+| Could not connect to MySQL database at 127.0.0.1: Access denied for user 'acore'@'localhost' (using password: YES)DatabasePool Login NOT opened. There were errors opening the MySQL connections. Check your log file for specific errors |  LoginDatabaseInfoã€WorldDatabaseInfoã€CharacterDatabaseInfoè®¾ç½®é¡¹ä¸­æ•°æ®åº“é…ç½®ä¸æ­£ç¡®ï¼›ä½äºworldserver.conf
+| Directory "D:/a/acore-build/acore-build/data/sql/base/db_characters/" not exist Could not populate the Character database, see log for details. |  SourceDirectoryè®¾ç½®é¡¹ä¸­è·¯å¾„ä¸æ­£ç¡®,è®¾ç½®"."ä¸ºå½“å‰ç›®å½•ï¼›ä½äºauthserver.conf
+| Could not connect to MySQL database at 127.0.0.1: Unknown database 'acore_characters'Database "acore_characters" does not exist | æç¤ºæ•°æ®åº“ä¸­acore_charactersä¸å­˜åœ¨æ˜¯å¦åˆ›å»ºï¼Ÿå›è½¦å³å¯
+| Could not connect to MySQL database at 127.0.0.1: Unknown database 'acore_world'Database "acore_world" does not exist | æç¤ºæ•°æ®åº“ä¸­acore_worldä¸å­˜åœ¨æ˜¯å¦åˆ›å»ºï¼Ÿå›è½¦å³å¯
+| Map file './maps/0004331.map': does not exist! | è¯·ä¸‹è½½[data.zip](https://github.com/wowgaming/client-data/releases/)è§£å‹åˆ°dataæ–‡ä»¶å¤¹ä¸­,ç¡®ä¿è®¾ç½®é¡¹ä¸ºDataDir = "./adta"ï¼›ä½äºworldserver.conf
+| æ–‡ä»¶å¤¹ä¸­æ²¡æœ‰lua_scripts | è¯·æ‰‹åŠ¨åˆ›å»ºlua_scriptsæ–‡ä»¶å¤¹ï¼Œluaæ–‡ä»¶åŠ è½½ç›®å½•
 
 </details>
