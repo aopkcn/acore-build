@@ -2,17 +2,18 @@ name: 版本检查
 
 on:
   workflow_dispatch:
-  - cron: "0 * * * *"  # 每小时执行一次
-  push:
-    branches: [build]
+  # schedule:  
+  # - cron: "30 22 * * *"
+  # push:
+  #   branches: [build]
+  #   paths-ignore:
+  #     - 'Version.txt'
+  #     - 'README.md'
 
 
-concurrency:
-  group: ${{ github.workflow }})
-  cancel-in-progress: true
 
 jobs:
-  version-check:
+  build-ubuntu:
     name: 检查版本
     runs-on: ubuntu-20.04
     outputs:
@@ -27,13 +28,9 @@ jobs:
             BOT_ID=$(curl -s https://api.github.com/repos/liyunfan1223/azerothcore-wotlk/commits/Playerbot?per_page=1 | jq -r '.sha')
             LBOT_ID=$(curl -s https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt | sed -n 's/^Playerbot=//p')
             curl -s -L -o Version.txt https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt
-            echo "最新AC: $AC_ID 本地AC: $LAC_ID"
-            echo "最新BOT: $BOT_ID 本地BOT: $LBOT_ID"
-
-            if [ -z "$AC_ID" ] || [ -z "$BOT_ID" ]; then
-                echo "AC_ID 或 BOT_ID 不能为空，请检查配置"
-                exit 1  
-            fi
+            echo "最新AC: $AC_ID 保存AC: $LAC_ID"
+            echo "最新BOT: $BOT_ID 保存BOT: $LBOT_ID"
+    
             message=""
             if [ "$AC_ID" == "$LAC_ID" ] && [ "$BOT_ID" == "$LBOT_ID" ]; then
                 echo "当前提交 ID 已是最新，无需更新"
@@ -71,3 +68,27 @@ jobs:
                           "branch": "build"
                         }'
             fi
+      - name: 触发AC纯净版编译
+        if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isazerothcore == 'false'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+          repository: aopkcn/acore-build
+          event-type: AC纯净版编译
+          client-payload: >
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }
+      - name: 触发AC机器人编译
+        if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isplayerbot == 'false'
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.TOKEN }}
+          repository: aopkcn/acore-build
+          event-type: AC机器人编译
+          client-payload: >
+            {
+              "ref": "${{ github.ref }}",
+              "sha": "${{ github.sha }}"
+            }

@@ -1,181 +1,172 @@
-name: 鑷姩缂栬瘧
+name: 自动编译
 
 on:
   workflow_dispatch:
-  # schedule:  
+  schedule:  
   #- cron: "30 22 * * *"
-<<<<<<< HEAD
-  # - cron: "0 * * * *"  # 每小时执行一次
-=======
-  - cron: "0 * * * *"  # 姣忓皬鏃舵墽琛屼竴娆?
->>>>>>> cd35b66783dd68d3564ebe0e4f9c9d6c8fca3f26
+  - cron: "0 * * * *"  # 每小时执行一次
   push:
     branches: [build]
-    paths:
-    - 'Version.txt'
-    # paths-ignore:
-    #   - 'Version.txt'
-    #   - 'README.md'
+    paths-ignore:
+      - 'Version.txt'
+      - 'README.md'
 
-#concurrency:
- # group: ${{ github.workflow }})
-  #cancel-in-progress: true
+concurrency:
+  group: ${{ github.workflow }})
+  cancel-in-progress: true
 
 jobs:
   version-check:
-    name: 妫�鏌ョ増鏈?
+    name: 检查版本
     runs-on: ubuntu-20.04
     outputs:
       isazerothcore: ${{ steps.update_switch.outputs.isazerothcore }}
       isplayerbot: ${{ steps.update_switch.outputs.isplayerbot }}
     steps:
-      - name: 妫�鏌ユ彁浜?ID 鏄惁闇�瑕佹洿鏂?
+      - name: 检查提交 ID 是否需要更新
         id: update_switch
         run: |
             AC_ID=$(curl -s https://api.github.com/repos/azerothcore/azerothcore-wotlk/commits/master?per_page=1 | jq -r '.sha')
             LAC_ID=$(curl -s https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt | sed -n 's/^Azerothcore=//p')
             BOT_ID=$(curl -s https://api.github.com/repos/liyunfan1223/azerothcore-wotlk/commits/Playerbot?per_page=1 | jq -r '.sha')
             LBOT_ID=$(curl -s https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt | sed -n 's/^Playerbot=//p')
-<<<<<<< HEAD
-           
-            echo "最新AC: $AC_ID 本地AC: $LAC_ID"
-            echo "最新BOT: $BOT_ID 本地BOT: $LBOT_ID"
-
-            if [ -z "$AC_ID" ] || [ -z "$BOT_ID" ]; then
-                echo "AC_ID 或 BOT_ID 不能为空，请检查配置"
-                exit 1  
-            fi
-=======
             curl -s -L -o Version.txt https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt
-            echo "鏈�鏂癆C: $AC_ID 淇濆瓨AC: $LAC_ID"
-            echo "鏈�鏂癇OT: $BOT_ID 淇濆瓨BOT: $LBOT_ID"
+            echo "最新AC: $AC_ID 保存AC: $LAC_ID"
+            echo "最新BOT: $BOT_ID 保存BOT: $LBOT_ID"
     
             message=""
->>>>>>> cd35b66783dd68d3564ebe0e4f9c9d6c8fca3f26
             if [ "$AC_ID" == "$LAC_ID" ] && [ "$BOT_ID" == "$LBOT_ID" ]; then
-                echo "褰撳墠鎻愪氦 ID 宸叉槸鏈�鏂帮紝鏃犻渶鏇存柊"
+                echo "当前提交 ID 已是最新，无需更新"
                 echo "isazerothcore=true" >> $GITHUB_OUTPUT
                 echo "isplayerbot=true" >> $GITHUB_OUTPUT
             else
                 if [ "$AC_ID" != "$LAC_ID" ]; then
-                    echo "AC 鎻愪氦 ID 涓嶄竴鑷达紝闇�瑕佹洿鏂?
+                    echo "AC 提交 ID 不一致，需要更新"
                     echo "isazerothcore=false" >> $GITHUB_OUTPUT
-<<<<<<< HEAD
-=======
                     sed -i "s/^Azerothcore=.*/Azerothcore=$AC_ID/" Version.txt
-                    message="鏇存柊Azerothcore鎻愪氦ID:$AC_ID \n"
->>>>>>> cd35b66783dd68d3564ebe0e4f9c9d6c8fca3f26
+                    message="更新Azerothcore提交ID:$AC_ID \n"
                 fi
                 if [ "$BOT_ID" != "$LBOT_ID" ]; then
-                    echo "BOT 鎻愪氦 ID 涓嶄竴鑷达紝闇�瑕佹洿鏂?
+                    echo "BOT 提交 ID 不一致，需要更新"
                     echo "isplayerbot=false" >> $GITHUB_OUTPUT
-<<<<<<< HEAD
-=======
                     sed -i "s/^Playerbot=.*/Playerbot=$BOT_ID/" Version.txt
                     if [ -n "$message" ]; then
-                        message="$message 鏇存柊Playerbot鎻愪氦ID:$BOT_ID"
+                        message="$message 更新Playerbot提交ID:$BOT_ID"
                     else
-                        message="鏇存柊Playerbot鎻愪氦ID:$BOT_ID"
+                        message="更新Playerbot提交ID:$BOT_ID"
                     fi
->>>>>>> cd35b66783dd68d3564ebe0e4f9c9d6c8fca3f26
                 fi
+
+                API_URL="https://api.github.com/repos/${{ github.repository }}/contents/Version.txt"
+                FILE_SHA=$(curl -s -H "Authorization: token ${{ secrets.TOKEN }}" \
+                                       -H "Accept: application/vnd.github.v3+json" \
+                                       "$API_URL?ref=build" | jq -r '.sha')
+                curl -X PUT $API_URL \
+                    -H "Authorization: token ${{ secrets.TOKEN }}" \
+                    -H "Accept: application/vnd.github.v3+json" \
+                    -d '{
+                          "message": "'"$message"'",
+                          "content": "'"$(base64 -w 0 Version.txt)"'",
+                          "sha": "'"$FILE_SHA"'",
+                          "branch": "build"
+                        }'
             fi
 
   ac-docker-build:
-    name: ACdocker缂栬瘧
+    name: ACdocker编译
     needs: version-check
     if: ${{ needs.version-check.outputs.isazerothcore == 'false' }}
     runs-on: ubuntu-20.04
     steps:
-      - name: 鎷夊彇鏍稿績浠ｇ爜
+      - name: 拉取核心代码
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/azerothcore-wotlk'
           ref: 'master'
 
-      - name: 鎷夊彇褰撳墠椤圭洰
+      - name: 拉取当前项目
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: 鎷夊彇Eluna浠ｇ爜
+      - name: 拉取Eluna代码
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: 涓嬭浇骞舵浛鎹otdMgr.cpp
+      - name: 下载并替换MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
           mv -f MotdMgr.cpp src/server/game/Motd/MotdMgr.cpp
 
-      - name: 鐧诲綍Docker瀹瑰櫒鏈嶅姟
+      - name: 登录Docker容器服务
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} 
           password: ${{ secrets.DOCKERHUB_TOKEN }} 
 
-      - name: 鐧诲綍GitHub瀹瑰櫒鏈嶅姟
+      - name: 登录GitHub容器服务
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: 鐧诲綍闃块噷浜戝鍣ㄦ湇鍔?
+      - name: 登录阿里云容器服务
         uses: docker/login-action@v3
         with:
           registry: registry.cn-chengdu.aliyuncs.com
           username: ${{ secrets.ALYUN_NAME }}
           password: ${{ secrets.ALYUN_TOKEN }}
 
-      - name: 璁剧疆缂栬瘧鐗堟湰
+      - name: 设置编译版本
         id: version
         run: |
             version=$(curl -s https://api.github.com/repos/azerothcore/azerothcore-wotlk/commits/master?per_page=1 | jq -r '.sha')
             echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: 璁剧疆 Docker Buildx 鐜
+      - name: 设置 Docker Buildx 环境
         uses: docker/setup-buildx-action@v3
 
-      - name: 缂栬瘧 worldserver 
+      - name: 编译 worldserver 
         uses: ./build/.github/ac_docker-build 
         with:
           component-name: worldserver 
           version: ${{ steps.version.outputs.version }} 
           push: true 
 
-      - name: 缂栬瘧 authserver 
+      - name: 编译 authserver 
         uses: ./build/.github/ac_docker-build
         with:
           component-name: authserver
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 db-import 
+      - name: 编译 db-import 
         uses: ./build/.github/ac_docker-build
         with:
           component-name: db-import
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 client-data
+      - name: 编译 client-data
         uses: ./build/.github/ac_docker-build
         with:
           component-name: client-data
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 tools
+      - name: 编译 tools
         uses: ./build/.github/ac_docker-build
         with:
           component-name: tools
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 dev-server
+      - name: 编译 dev-server
         uses: ./build/.github/ac_docker-build
         with:
           component-name: dev
@@ -185,33 +176,33 @@ jobs:
 
 
   ac-windows-build:
-    name: ACWin64缂栬瘧
+    name: ACWin64编译
     needs: version-check
     if: ${{ needs.version-check.outputs.isazerothcore == 'false' }}
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
     steps:
-      - name: 鎷夊彇鏍稿績浠ｇ爜
+      - name: 拉取核心代码
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/azerothcore-wotlk'
           ref: 'master'
 
-      - name: 鎷夊彇褰撳墠椤圭洰
+      - name: 拉取当前项目
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: 鎷夊彇Eluna浠ｇ爜
+      - name: 拉取Eluna代码
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: 涓嬭浇骞舵浛鎹otdMgr.cpp
+      - name: 下载并替换MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/master/MotdMgr.cpp
           Move-Item -Path MotdMgr.cpp -Destination src/server/game/Motd/MotdMgr.cpp -Force
@@ -225,13 +216,13 @@ jobs:
           CONTINUOUS_INTEGRATION: true
         run: |
           ./acore.sh install-deps
-      - name: 缂栬瘧
+      - name: 编译
         shell: bash
         run: |
           export CTOOLS_BUILD=all
           # export CTYPE=RelWithDebInfo
           ./acore.sh compiler build
-      - name: 鎵撳寘缂栬瘧鏂囦欢
+      - name: 打包编译文件
         run: |
     
             mkdir -p AzerothCoreWotlk-Win64\lua_scripts
@@ -259,63 +250,63 @@ jobs:
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Compress-Archive -Path var\build\obj\bin\RelWithDebInfo\* -DestinationPath AC-Win.zip
-      - name: 涓婁紶Windows缂栬瘧鏂囦欢
+      - name: 上传Windows编译文件
         uses: actions/upload-artifact@v4
         with:
          name: AzerothCoreWotlk-Win64
          path: AzerothCoreWotlk-Win64
 
   ac-bot-docker-build:
-    name: AC鏈哄櫒浜篸ocker缂栬瘧
+    name: AC机器人docker编译
     needs: version-check
     if: ${{ needs.version-check.outputs.isplayerbot == 'false' }}
     runs-on: ubuntu-20.04
     steps:
-      - name: 鎷夊彇鏍稿績浠ｇ爜
+      - name: 拉取核心代码
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/azerothcore-wotlk'
           ref: 'Playerbot'
 
-      - name: 鎷夊彇褰撳墠椤圭洰
+      - name: 拉取当前项目
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: 鎷夊彇Eluna浠ｇ爜
+      - name: 拉取Eluna代码
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: 鎷夊彇playerbots浠ｇ爜
+      - name: 拉取playerbots代码
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/mod-playerbots'  
           ref: 'master'
           path: 'modules/mod-playerbots'
 
-      - name: 涓嬭浇骞舵浛鎹otdMgr.cpp
+      - name: 下载并替换MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
           mv -f MotdMgr.cpp src/server/game/Motd/MotdMgr.cpp
 
-      - name: 鐧诲綍Docker瀹瑰櫒鏈嶅姟
+      - name: 登录Docker容器服务
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} 
           password: ${{ secrets.DOCKERHUB_TOKEN }} 
 
-      - name: 鐧诲綍GitHub瀹瑰櫒鏈嶅姟
+      - name: 登录GitHub容器服务
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: 鐧诲綍闃块噷浜戝鍣ㄦ湇鍔?
+      - name: 登录阿里云容器服务
         uses: docker/login-action@v3
         with:
           registry: registry.cn-chengdu.aliyuncs.com
@@ -323,51 +314,51 @@ jobs:
           password: ${{ secrets.ALYUN_TOKEN }}
 
 
-      - name: 璁剧疆缂栬瘧鐗堟湰
+      - name: 设置编译版本
         id: version
         run: |
           version=$(curl -s https://api.github.com/repos/liyunfan1223/azerothcore-wotlk/commits/Playerbot?per_page=1 | jq -r '.sha')
           echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: 璁剧疆 Docker Buildx 鐜
+      - name: 设置 Docker Buildx 环境
         uses: docker/setup-buildx-action@v3
 
-      - name: 缂栬瘧 worldserver 
+      - name: 编译 worldserver 
         uses: ./build/.github/ac_bot_docker-build 
         with:
           component-name: worldserver
           version: ${{ steps.version.outputs.version }} 
           push: true 
 
-      - name: 缂栬瘧 authserver 
+      - name: 编译 authserver 
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: authserver
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 db-import 
+      - name: 编译 db-import 
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: db-import
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 client-data
+      - name: 编译 client-data
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: client-data
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 tools
+      - name: 编译 tools
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: tools
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: 缂栬瘧 dev-server
+      - name: 编译 dev-server
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: dev
@@ -377,40 +368,40 @@ jobs:
 
 
   ac-bot-windows-build:
-    name: AC鏈哄櫒浜篧in64缂栬瘧
+    name: AC机器人Win64编译
     needs: version-check
     if: ${{ needs.version-check.outputs.isplayerbot == 'false' }}
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
     steps:
-      - name: 鎷夊彇鏍稿績浠ｇ爜
+      - name: 拉取核心代码
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/azerothcore-wotlk'
           ref: 'Playerbot'
 
-      - name: 鎷夊彇褰撳墠椤圭洰
+      - name: 拉取当前项目
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: 鎷夊彇Eluna浠ｇ爜
+      - name: 拉取Eluna代码
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: 鎷夊彇playerbots浠ｇ爜
+      - name: 拉取playerbots代码
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/mod-playerbots'  
           ref: 'master'
           path: 'modules/mod-playerbots'
 
-      - name: 涓嬭浇骞舵浛鎹otdMgr.cpp
+      - name: 下载并替换MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
           Move-Item -Path MotdMgr.cpp -Destination src/server/game/Motd/MotdMgr.cpp -Force
@@ -423,13 +414,13 @@ jobs:
           CONTINUOUS_INTEGRATION: true2
         run: |
           ./acore.sh install-deps
-      - name: 缂栬瘧
+      - name: 编译
         shell: bash
         run: |
           export CTOOLS_BUILD=all
           # export CTYPE=RelWithDebInfo
           ./acore.sh compiler build
-      - name: 鎵撳寘缂栬瘧鏂囦欢
+      - name: 打包编译文件
         run: |
             mkdir -p AzerothCoreWotlkBot-Win64\modules\mod-playerbots\data
             mkdir -p AzerothCoreWotlkBot-Win64\lua_scripts
@@ -458,7 +449,7 @@ jobs:
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Compress-Archive -Path var\build\obj\bin\RelWithDebInfo\* -DestinationPath AC-Bot-Win.zip
-      - name: 涓婁紶 Windows 缂栬瘧鏂囦欢
+      - name: 上传 Windows 编译文件
         uses: actions/upload-artifact@v4
         with:
          name: AzerothCoreWotlkBot-Win64
