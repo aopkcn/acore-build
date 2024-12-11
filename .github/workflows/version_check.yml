@@ -2,23 +2,23 @@ name: 版本检查
 
 on:
   workflow_dispatch:
-  # schedule:  
-  # - cron: "30 22 * * *"
-  # push:
-  #   branches: [build]
-  #   paths-ignore:
-  #     - 'Version.txt'
-  #     - 'README.md'
+  schedule:  
+  #- cron: "30 22 * * *"
+  - cron: "0 * * * *"  # 每小时执行一次
+  push:
+    branches: [build]
+    paths-ignore:
+      - 'Version.txt'
+      - 'README.md'
 
-
+concurrency:
+  group: ${{ github.workflow }})
+  cancel-in-progress: true
 
 jobs:
   build-ubuntu:
     name: 检查版本
     runs-on: ubuntu-20.04
-    outputs:
-      isazerothcore: ${{ steps.update_switch.outputs.isazerothcore }}
-      isplayerbot: ${{ steps.update_switch.outputs.isplayerbot }}
     steps:
       - name: 检查提交 ID 是否需要更新
         id: update_switch
@@ -30,22 +30,21 @@ jobs:
             curl -s -L -o Version.txt https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt
             echo "最新AC: $AC_ID 保存AC: $LAC_ID"
             echo "最新BOT: $BOT_ID 保存BOT: $LBOT_ID"
-    
             message=""
+            if [ -z "$AC_ID" ] || [ -z "$BOT_ID" ]; then
+                echo "AC_ID 或 BOT_ID 不能为空，请检查配置"
+                exit 1 
+            fi
             if [ "$AC_ID" == "$LAC_ID" ] && [ "$BOT_ID" == "$LBOT_ID" ]; then
                 echo "当前提交 ID 已是最新，无需更新"
-                echo "isazerothcore=true" >> $GITHUB_OUTPUT
-                echo "isplayerbot=true" >> $GITHUB_OUTPUT
             else
                 if [ "$AC_ID" != "$LAC_ID" ]; then
                     echo "AC 提交 ID 不一致，需要更新"
-                    echo "isazerothcore=false" >> $GITHUB_OUTPUT
                     sed -i "s/^Azerothcore=.*/Azerothcore=$AC_ID/" Version.txt
                     message="更新Azerothcore提交ID:$AC_ID \n"
                 fi
                 if [ "$BOT_ID" != "$LBOT_ID" ]; then
                     echo "BOT 提交 ID 不一致，需要更新"
-                    echo "isplayerbot=false" >> $GITHUB_OUTPUT
                     sed -i "s/^Playerbot=.*/Playerbot=$BOT_ID/" Version.txt
                     if [ -n "$message" ]; then
                         message="$message 更新Playerbot提交ID:$BOT_ID"
@@ -68,27 +67,3 @@ jobs:
                           "branch": "build"
                         }'
             fi
-      - name: 触发AC纯净版编译
-        if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isazerothcore == 'false'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.TOKEN }}
-          repository: aopkcn/acore-build
-          event-type: AC纯净版编译
-          client-payload: >
-            {
-              "ref": "${{ github.ref }}",
-              "sha": "${{ github.sha }}"
-            }
-      - name: 触发AC机器人编译
-        if: github.repository == 'aopkcn/acore-build' && github.ref_name == 'build' && steps.update_switch.outputs.isplayerbot == 'false'
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.TOKEN }}
-          repository: aopkcn/acore-build
-          event-type: AC机器人编译
-          client-payload: >
-            {
-              "ref": "${{ github.ref }}",
-              "sha": "${{ github.sha }}"
-            }
