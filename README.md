@@ -1,6 +1,6 @@
-## Wondows快速下载
+## 快速下载
 
-[最新纯净版本](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) | [最新机器人版本](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) 
+[最新纯净版本(Win64)](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) | [最新机器人版本(Win64)](https://nightly.link/aopkcn/acore-build/workflows/auto_build/build/AzerothCoreWotlkBot-Win64.zip) 
 
 ## 镜像拉取
 
