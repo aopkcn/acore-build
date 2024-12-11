@@ -1,29 +1,29 @@
-name: ×Ô¶¯±àÒë
+name: è‡ªåŠ¨ç¼–è¯‘
 
 on:
   workflow_dispatch:
   schedule:  
   #- cron: "30 22 * * *"
-  - cron: "0 * * * *"  # Ã¿Ğ¡Ê±Ö´ĞĞÒ»´Î
+  - cron: "0 * * * *"  # æ¯å°æ—¶æ‰§è¡Œä¸€æ¬¡
   push:
     branches: [build]
     paths-ignore:
       - 'Version.txt'
       - 'README.md'
 
-concurrency:
-  group: ${{ github.workflow }})
-  cancel-in-progress: true
+#concurrency:
+ # group: ${{ github.workflow }})
+  #cancel-in-progress: true
 
 jobs:
   version-check:
-    name: ¼ì²é°æ±¾
+    name: æ£€æŸ¥ç‰ˆæœ¬
     runs-on: ubuntu-20.04
     outputs:
       isazerothcore: ${{ steps.update_switch.outputs.isazerothcore }}
       isplayerbot: ${{ steps.update_switch.outputs.isplayerbot }}
     steps:
-      - name: ¼ì²éÌá½» ID ÊÇ·ñĞèÒª¸üĞÂ
+      - name: æ£€æŸ¥æäº¤ ID æ˜¯å¦éœ€è¦æ›´æ–°
         id: update_switch
         run: |
             AC_ID=$(curl -s https://api.github.com/repos/azerothcore/azerothcore-wotlk/commits/master?per_page=1 | jq -r '.sha')
@@ -31,29 +31,29 @@ jobs:
             BOT_ID=$(curl -s https://api.github.com/repos/liyunfan1223/azerothcore-wotlk/commits/Playerbot?per_page=1 | jq -r '.sha')
             LBOT_ID=$(curl -s https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt | sed -n 's/^Playerbot=//p')
             curl -s -L -o Version.txt https://raw.githubusercontent.com/aopkcn/acore-build/build/Version.txt
-            echo "×îĞÂAC: $AC_ID ±£´æAC: $LAC_ID"
-            echo "×îĞÂBOT: $BOT_ID ±£´æBOT: $LBOT_ID"
+            echo "æœ€æ–°AC: $AC_ID ä¿å­˜AC: $LAC_ID"
+            echo "æœ€æ–°BOT: $BOT_ID ä¿å­˜BOT: $LBOT_ID"
     
             message=""
             if [ "$AC_ID" == "$LAC_ID" ] && [ "$BOT_ID" == "$LBOT_ID" ]; then
-                echo "µ±Ç°Ìá½» ID ÒÑÊÇ×îĞÂ£¬ÎŞĞè¸üĞÂ"
+                echo "å½“å‰æäº¤ ID å·²æ˜¯æœ€æ–°ï¼Œæ— éœ€æ›´æ–°"
                 echo "isazerothcore=true" >> $GITHUB_OUTPUT
                 echo "isplayerbot=true" >> $GITHUB_OUTPUT
             else
                 if [ "$AC_ID" != "$LAC_ID" ]; then
-                    echo "AC Ìá½» ID ²»Ò»ÖÂ£¬ĞèÒª¸üĞÂ"
+                    echo "AC æäº¤ ID ä¸ä¸€è‡´ï¼Œéœ€è¦æ›´æ–°"
                     echo "isazerothcore=false" >> $GITHUB_OUTPUT
                     sed -i "s/^Azerothcore=.*/Azerothcore=$AC_ID/" Version.txt
-                    message="¸üĞÂAzerothcoreÌá½»ID:$AC_ID \n"
+                    message="æ›´æ–°Azerothcoreæäº¤ID:$AC_ID \n"
                 fi
                 if [ "$BOT_ID" != "$LBOT_ID" ]; then
-                    echo "BOT Ìá½» ID ²»Ò»ÖÂ£¬ĞèÒª¸üĞÂ"
+                    echo "BOT æäº¤ ID ä¸ä¸€è‡´ï¼Œéœ€è¦æ›´æ–°"
                     echo "isplayerbot=false" >> $GITHUB_OUTPUT
                     sed -i "s/^Playerbot=.*/Playerbot=$BOT_ID/" Version.txt
                     if [ -n "$message" ]; then
-                        message="$message ¸üĞÂPlayerbotÌá½»ID:$BOT_ID"
+                        message="$message æ›´æ–°Playerbotæäº¤ID:$BOT_ID"
                     else
-                        message="¸üĞÂPlayerbotÌá½»ID:$BOT_ID"
+                        message="æ›´æ–°Playerbotæäº¤ID:$BOT_ID"
                     fi
                 fi
 
@@ -73,100 +73,100 @@ jobs:
             fi
 
   ac-docker-build:
-    name: ACdocker±àÒë
+    name: ACdockerç¼–è¯‘
     needs: version-check
     if: ${{ needs.version-check.outputs.isazerothcore == 'false' }}
     runs-on: ubuntu-20.04
     steps:
-      - name: À­È¡ºËĞÄ´úÂë
+      - name: æ‹‰å–æ ¸å¿ƒä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/azerothcore-wotlk'
           ref: 'master'
 
-      - name: À­È¡µ±Ç°ÏîÄ¿
+      - name: æ‹‰å–å½“å‰é¡¹ç›®
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: À­È¡Eluna´úÂë
+      - name: æ‹‰å–Elunaä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: ÏÂÔØ²¢Ìæ»»MotdMgr.cpp
+      - name: ä¸‹è½½å¹¶æ›¿æ¢MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
           mv -f MotdMgr.cpp src/server/game/Motd/MotdMgr.cpp
 
-      - name: µÇÂ¼DockerÈİÆ÷·şÎñ
+      - name: ç™»å½•Dockerå®¹å™¨æœåŠ¡
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} 
           password: ${{ secrets.DOCKERHUB_TOKEN }} 
 
-      - name: µÇÂ¼GitHubÈİÆ÷·şÎñ
+      - name: ç™»å½•GitHubå®¹å™¨æœåŠ¡
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: µÇÂ¼°¢ÀïÔÆÈİÆ÷·şÎñ
+      - name: ç™»å½•é˜¿é‡Œäº‘å®¹å™¨æœåŠ¡
         uses: docker/login-action@v3
         with:
           registry: registry.cn-chengdu.aliyuncs.com
           username: ${{ secrets.ALYUN_NAME }}
           password: ${{ secrets.ALYUN_TOKEN }}
 
-      - name: ÉèÖÃ±àÒë°æ±¾
+      - name: è®¾ç½®ç¼–è¯‘ç‰ˆæœ¬
         id: version
         run: |
             version=$(curl -s https://api.github.com/repos/azerothcore/azerothcore-wotlk/commits/master?per_page=1 | jq -r '.sha')
             echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: ÉèÖÃ Docker Buildx »·¾³
+      - name: è®¾ç½® Docker Buildx ç¯å¢ƒ
         uses: docker/setup-buildx-action@v3
 
-      - name: ±àÒë worldserver 
+      - name: ç¼–è¯‘ worldserver 
         uses: ./build/.github/ac_docker-build 
         with:
           component-name: worldserver 
           version: ${{ steps.version.outputs.version }} 
           push: true 
 
-      - name: ±àÒë authserver 
+      - name: ç¼–è¯‘ authserver 
         uses: ./build/.github/ac_docker-build
         with:
           component-name: authserver
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë db-import 
+      - name: ç¼–è¯‘ db-import 
         uses: ./build/.github/ac_docker-build
         with:
           component-name: db-import
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë client-data
+      - name: ç¼–è¯‘ client-data
         uses: ./build/.github/ac_docker-build
         with:
           component-name: client-data
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë tools
+      - name: ç¼–è¯‘ tools
         uses: ./build/.github/ac_docker-build
         with:
           component-name: tools
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë dev-server
+      - name: ç¼–è¯‘ dev-server
         uses: ./build/.github/ac_docker-build
         with:
           component-name: dev
@@ -176,33 +176,33 @@ jobs:
 
 
   ac-windows-build:
-    name: ACWin64±àÒë
+    name: ACWin64ç¼–è¯‘
     needs: version-check
     if: ${{ needs.version-check.outputs.isazerothcore == 'false' }}
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
     steps:
-      - name: À­È¡ºËĞÄ´úÂë
+      - name: æ‹‰å–æ ¸å¿ƒä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/azerothcore-wotlk'
           ref: 'master'
 
-      - name: À­È¡µ±Ç°ÏîÄ¿
+      - name: æ‹‰å–å½“å‰é¡¹ç›®
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: À­È¡Eluna´úÂë
+      - name: æ‹‰å–Elunaä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: ÏÂÔØ²¢Ìæ»»MotdMgr.cpp
+      - name: ä¸‹è½½å¹¶æ›¿æ¢MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/master/MotdMgr.cpp
           Move-Item -Path MotdMgr.cpp -Destination src/server/game/Motd/MotdMgr.cpp -Force
@@ -216,13 +216,13 @@ jobs:
           CONTINUOUS_INTEGRATION: true
         run: |
           ./acore.sh install-deps
-      - name: ±àÒë
+      - name: ç¼–è¯‘
         shell: bash
         run: |
           export CTOOLS_BUILD=all
           # export CTYPE=RelWithDebInfo
           ./acore.sh compiler build
-      - name: ´ò°ü±àÒëÎÄ¼ş
+      - name: æ‰“åŒ…ç¼–è¯‘æ–‡ä»¶
         run: |
     
             mkdir -p AzerothCoreWotlk-Win64\lua_scripts
@@ -250,63 +250,63 @@ jobs:
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Compress-Archive -Path var\build\obj\bin\RelWithDebInfo\* -DestinationPath AC-Win.zip
-      - name: ÉÏ´«Windows±àÒëÎÄ¼ş
+      - name: ä¸Šä¼ Windowsç¼–è¯‘æ–‡ä»¶
         uses: actions/upload-artifact@v4
         with:
          name: AzerothCoreWotlk-Win64
          path: AzerothCoreWotlk-Win64
 
   ac-bot-docker-build:
-    name: AC»úÆ÷ÈËdocker±àÒë
+    name: ACæœºå™¨äººdockerç¼–è¯‘
     needs: version-check
     if: ${{ needs.version-check.outputs.isplayerbot == 'false' }}
     runs-on: ubuntu-20.04
     steps:
-      - name: À­È¡ºËĞÄ´úÂë
+      - name: æ‹‰å–æ ¸å¿ƒä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/azerothcore-wotlk'
           ref: 'Playerbot'
 
-      - name: À­È¡µ±Ç°ÏîÄ¿
+      - name: æ‹‰å–å½“å‰é¡¹ç›®
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: À­È¡Eluna´úÂë
+      - name: æ‹‰å–Elunaä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: À­È¡playerbots´úÂë
+      - name: æ‹‰å–playerbotsä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/mod-playerbots'  
           ref: 'master'
           path: 'modules/mod-playerbots'
 
-      - name: ÏÂÔØ²¢Ìæ»»MotdMgr.cpp
+      - name: ä¸‹è½½å¹¶æ›¿æ¢MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
           mv -f MotdMgr.cpp src/server/game/Motd/MotdMgr.cpp
 
-      - name: µÇÂ¼DockerÈİÆ÷·şÎñ
+      - name: ç™»å½•Dockerå®¹å™¨æœåŠ¡
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }} 
           password: ${{ secrets.DOCKERHUB_TOKEN }} 
 
-      - name: µÇÂ¼GitHubÈİÆ÷·şÎñ
+      - name: ç™»å½•GitHubå®¹å™¨æœåŠ¡
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
 
-      - name: µÇÂ¼°¢ÀïÔÆÈİÆ÷·şÎñ
+      - name: ç™»å½•é˜¿é‡Œäº‘å®¹å™¨æœåŠ¡
         uses: docker/login-action@v3
         with:
           registry: registry.cn-chengdu.aliyuncs.com
@@ -314,51 +314,51 @@ jobs:
           password: ${{ secrets.ALYUN_TOKEN }}
 
 
-      - name: ÉèÖÃ±àÒë°æ±¾
+      - name: è®¾ç½®ç¼–è¯‘ç‰ˆæœ¬
         id: version
         run: |
           version=$(curl -s https://api.github.com/repos/liyunfan1223/azerothcore-wotlk/commits/Playerbot?per_page=1 | jq -r '.sha')
           echo "version=$version" >> $GITHUB_OUTPUT
 
-      - name: ÉèÖÃ Docker Buildx »·¾³
+      - name: è®¾ç½® Docker Buildx ç¯å¢ƒ
         uses: docker/setup-buildx-action@v3
 
-      - name: ±àÒë worldserver 
+      - name: ç¼–è¯‘ worldserver 
         uses: ./build/.github/ac_bot_docker-build 
         with:
           component-name: worldserver
           version: ${{ steps.version.outputs.version }} 
           push: true 
 
-      - name: ±àÒë authserver 
+      - name: ç¼–è¯‘ authserver 
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: authserver
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë db-import 
+      - name: ç¼–è¯‘ db-import 
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: db-import
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë client-data
+      - name: ç¼–è¯‘ client-data
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: client-data
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë tools
+      - name: ç¼–è¯‘ tools
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: tools
           version: ${{ steps.version.outputs.version }}
           push: true
 
-      - name: ±àÒë dev-server
+      - name: ç¼–è¯‘ dev-server
         uses: ./build/.github/ac_bot_docker-build
         with:
           component-name: dev
@@ -368,40 +368,40 @@ jobs:
 
 
   ac-bot-windows-build:
-    name: AC»úÆ÷ÈËWin64±àÒë
+    name: ACæœºå™¨äººWin64ç¼–è¯‘
     needs: version-check
     if: ${{ needs.version-check.outputs.isplayerbot == 'false' }}
     runs-on: windows-latest
     env:
       BOOST_ROOT: C:\local\boost_1_82_0
     steps:
-      - name: À­È¡ºËĞÄ´úÂë
+      - name: æ‹‰å–æ ¸å¿ƒä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/azerothcore-wotlk'
           ref: 'Playerbot'
 
-      - name: À­È¡µ±Ç°ÏîÄ¿
+      - name: æ‹‰å–å½“å‰é¡¹ç›®
         uses: actions/checkout@v4
         with:
           ref: 'build'
           path: 'build'
 
-      - name: À­È¡Eluna´úÂë
+      - name: æ‹‰å–Elunaä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'azerothcore/mod-eluna'  
           ref: 'master'
           path: 'modules/mod-eluna'
 
-      - name: À­È¡playerbots´úÂë
+      - name: æ‹‰å–playerbotsä»£ç 
         uses: actions/checkout@v4
         with:
           repository: 'liyunfan1223/mod-playerbots'  
           ref: 'master'
           path: 'modules/mod-playerbots'
 
-      - name: ÏÂÔØ²¢Ìæ»»MotdMgr.cpp
+      - name: ä¸‹è½½å¹¶æ›¿æ¢MotdMgr.cpp
         run: |
           curl -L -o MotdMgr.cpp https://raw.githubusercontent.com/aopkcn/acore-build/build/MotdMgr.cpp
           Move-Item -Path MotdMgr.cpp -Destination src/server/game/Motd/MotdMgr.cpp -Force
@@ -414,13 +414,13 @@ jobs:
           CONTINUOUS_INTEGRATION: true2
         run: |
           ./acore.sh install-deps
-      - name: ±àÒë
+      - name: ç¼–è¯‘
         shell: bash
         run: |
           export CTOOLS_BUILD=all
           # export CTYPE=RelWithDebInfo
           ./acore.sh compiler build
-      - name: ´ò°ü±àÒëÎÄ¼ş
+      - name: æ‰“åŒ…ç¼–è¯‘æ–‡ä»¶
         run: |
             mkdir -p AzerothCoreWotlkBot-Win64\modules\mod-playerbots\data
             mkdir -p AzerothCoreWotlkBot-Win64\lua_scripts
@@ -449,7 +449,7 @@ jobs:
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Compress-Archive -Path var\build\obj\bin\RelWithDebInfo\* -DestinationPath AC-Bot-Win.zip
-      - name: ÉÏ´« Windows ±àÒëÎÄ¼ş
+      - name: ä¸Šä¼  Windows ç¼–è¯‘æ–‡ä»¶
         uses: actions/upload-artifact@v4
         with:
          name: AzerothCoreWotlkBot-Win64
