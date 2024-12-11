@@ -201,14 +201,12 @@ jobs:
         run: |
     
             mkdir -p AzerothCoreWotlk-Win64\lua_scripts
-            mkdir -p AzerothCoreWotlk-Win64\data
-
+            echo "" > AzerothCoreWotlk-Win64\lua脚本目录.txt
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\legacy.dll" -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path C:\tools\mysql\current\lib\libmysql.dll -Destination AzerothCoreWotlk-Win64
-           
-            Copy-Item -Path data\sql -Destination AzerothCoreWotlk-Win64\data -Recurse -Force
+
             Copy-Item -Path env\dist\configs -Destination AzerothCoreWotlk-Win64 -Recurse -Force
             Copy-Item -Path env\dist\authserver.exe -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path env\dist\worldserver.exe -Destination AzerothCoreWotlk-Win64
@@ -217,8 +215,10 @@ jobs:
             Copy-Item -Path env\dist\mmaps_generator.exe -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path env\dist\vmap4_assembler.exe -Destination AzerothCoreWotlk-Win64
             Copy-Item -Path env\dist\vmap4_extractor.exe -Destination AzerothCoreWotlk-Win64
-
-            Compress-Archive -Path AzerothCoreWotlk-Win64 -DestinationPath AC-Win.zip
+            
+            mkdir -p AzerothCoreWotlk-SQL\data
+            Copy-Item -Path data\sql -Destination AzerothCoreWotlk-SQL\data -Recurse -Force
+            #Compress-Archive -Path AzerothCoreWotlk-Win64 -DestinationPath AC-Win.zip
 
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\legacy.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
@@ -230,6 +230,11 @@ jobs:
         with:
          name: AzerothCoreWotlk-Win64
          path: AzerothCoreWotlk-Win64
+      - name: 上传数据库
+        uses: actions/upload-artifact@v4
+        with:
+         name: AzerothCoreWotlk-SQL
+         path: AzerothCoreWotlk-SQL
 
   ac-bot-docker-build:
     name: AC机器人docker编译
@@ -397,17 +402,14 @@ jobs:
           ./acore.sh compiler build
       - name: 打包编译文件
         run: |
-            mkdir -p AzerothCoreWotlkBot-Win64\modules\mod-playerbots\data
             mkdir -p AzerothCoreWotlkBot-Win64\lua_scripts
-            mkdir -p AzerothCoreWotlkBot-Win64\data
+            echo "" > AzerothCoreWotlkBot-Win64\lua脚本目录.txt
 
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\legacy.dll" -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll" -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path "C:\Program Files\OpenSSL\bin\libssl-1_1-x64.dll" -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path "C:\tools\mysql\current\lib\libmysql.dll" -Destination AzerothCoreWotlkBot-Win64
            
-            Copy-Item -Path modules\mod-playerbots\data\sql -Destination AzerothCoreWotlkBot-Win64\modules\mod-playerbots\data\sql -Recurse -Force
-            Copy-Item -Path data\sql -Destination AzerothCoreWotlkBot-Win64\data -Recurse -Force
             Copy-Item -Path env\dist\configs -Destination AzerothCoreWotlkBot-Win64 -Recurse -Force
             Copy-Item -Path env\dist\authserver.exe -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path env\dist\worldserver.exe -Destination AzerothCoreWotlkBot-Win64
@@ -417,7 +419,14 @@ jobs:
             Copy-Item -Path env\dist\vmap4_assembler.exe -Destination AzerothCoreWotlkBot-Win64
             Copy-Item -Path env\dist\vmap4_extractor.exe -Destination AzerothCoreWotlkBot-Win64
 
-            Compress-Archive -Path AzerothCoreWotlkBot-Win64 -DestinationPath AC-Bot-Win.zip
+            mkdir -p AzerothCoreWotlkBot-SQL\modules\mod-playerbots\data
+            mkdir -p AzerothCoreWotlkBot-SQL\data
+            Copy-Item -Path modules\mod-playerbots\data\sql -Destination AzerothCoreWotlkBot-SQL\modules\mod-playerbots\data\sql -Recurse -Force
+            Copy-Item -Path data\sql -Destination AzerothCoreWotlkBot-SQL\data -Recurse -Force
+
+
+
+            #Compress-Archive -Path AzerothCoreWotlkBot-Win64 -DestinationPath AC-Bot-Win.zip
 
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\legacy.dll -Destination var\build\obj\bin\RelWithDebInfo
       #       Move-Item -Path C:\Program Files\OpenSSL\bin\libcrypto-1_1-x64.dll -Destination var\build\obj\bin\RelWithDebInfo
@@ -429,3 +438,8 @@ jobs:
         with:
          name: AzerothCoreWotlkBot-Win64
          path: AzerothCoreWotlkBot-Win64
+      - name: 上传数据库
+        uses: actions/upload-artifact@v4
+        with:
+         name: AzerothCoreWotlkBot-SQL
+         path: AzerothCoreWotlkBot-SQL
