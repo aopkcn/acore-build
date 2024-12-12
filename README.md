@@ -29,20 +29,20 @@ docker pull aopkcn/ac-bot-wotlk-dev:latest
 
 ```
 #最新纯净版本
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-worldserver:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-authserver:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-db-import:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-client-data:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-tools:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-wotlk-dev:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-worldserver:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-authserver:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-db-import:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-client-data:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-tools:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-wotlk-dev:latest
 
 #最新机器人版本
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-worldserver:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-authserver:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-db-import:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-client-data:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-tools:latest
-docker pull registry.cn-chengdu.aliyuncs.comaopkcn/ac-bot-wotlk-dev:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-bot-wotlk-worldserver:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-bot-wotlk-authserver:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-bot-wotlk-db-import:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-bot-wotlk-client-data:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-bot-wotlk-tools:latest
+docker pull registry.cn-chengdu.aliyuncs.com/aopkcn/ac-bot-wotlk-dev:latest
 ```
 </details>
 <details>
