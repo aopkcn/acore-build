@@ -1,2 +1,2 @@
 Playerbot=7347f6493898a9109cdd9b886ac67bc7c57debe9
-Azerothcore=3dff27613612c130b6cc633ecde5abadec848ec4
+Azerothcore=9c01bbbd6e64853954308bca2242d561d89024c8
