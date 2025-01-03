@@ -5,11 +5,11 @@ on:
   schedule:  
   #- cron: "30 22 * * *"
   - cron: "0 * * * *"  # 每小时执行一次
-  push:
-    branches: [build]
-    paths-ignore:
-      - 'Version.txt'
-      - 'README.md'
+  # push:
+  #   branches: [build]
+  #   paths-ignore:
+  #     - 'Version.txt'
+  #     - 'README.md'
 
 concurrency:
   group: ${{ github.workflow }})
