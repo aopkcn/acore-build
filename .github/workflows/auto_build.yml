@@ -421,7 +421,7 @@ jobs:
       - name: Configure OS
         shell: bash
         env:
-          CONTINUOUS_INTEGRATION: true2
+          CONTINUOUS_INTEGRATION: true
         run: |
           ./acore.sh install-deps
       - name: 编译
