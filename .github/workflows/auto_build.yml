@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:  
   #- cron: "30 22 * * *"
-  - cron: "0 * * * *"  # 每小时执行一次
+  - cron: "0 */6 * * *"
   # push:
   #   branches: [build]
   #   paths-ignore:
